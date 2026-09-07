@@ -6,6 +6,6 @@ COPY pyproject.toml uv.lock ./
 
 RUN pip install uv && uv sync
 
-COPY .github/workflows .
+COPY . .
 
 CMD ["uv", "run", "uvicorn", "fastapi_app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]

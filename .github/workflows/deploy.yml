@@ -49,25 +49,3 @@ jobs:
           platforms: linux/arm64,linux/amd64
           push: true
           tags: ghcr.io/${{ steps.repo.outputs.repo }}:${{ github.sha }}
-          "cache-from: type=gha
-          cache-to: type=gha,mode=max"
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Send deploy request
-        run: |
-          HTTP_CODE=$(curl -s -o response.txt -w "%{http_code}" -X POST \
-            -H "Content-Type: application/json" \
-            -H "X-API-Key: ${{ secrets.LMS_API_KEY_ORDR }}" \
-            -d '{"image":"ghcr.io/${{ needs.build.outputs.repo }}:${{ github.sha }}","repository":"${{ github.repository }}"}' \
-            https://lms.python-labs.ru/api/deploy-requests)
-
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "Deployment failed with status code $HTTP_CODE"
-            echo "Response body:"
-            cat response.txt
-            exit 1
-          fi
