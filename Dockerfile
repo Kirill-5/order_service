@@ -8,4 +8,4 @@ RUN pip install uv && uv sync
 
 COPY .github/workflows .
 
-CMD ["uv", "run", "uvicorn", "fastapi_app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "python -c 'import fastapi_app' 2>&1 || echo IMPORT_FAILED; sleep 3600"]
