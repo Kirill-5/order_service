@@ -8,4 +8,4 @@ RUN pip install uv && uv sync
 
 COPY .github/workflows .
 
-CMD ["sh", "-c", "python -c 'import fastapi_app' 2>&1 || echo IMPORT_FAILED; sleep 3600"]
+CMD ["sh", "-c", "ls -la /app && sleep 3600"]
