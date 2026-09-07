@@ -8,8 +8,8 @@ from application.usecases.create_order import CreateOrderUsecase
 from application.usecases.get_order import GetOrderUsecase
 from infrastructure.http.catalog_client import HttpCatalogClient
 from infrastructure.persistence.uow import SQLAlchemyUnitOfWork
+from settings import DATABASE_URL, CATALOG_SERVICE_URL, CATALOG_SERVICE_API_KEY
 
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
 
 def get_session_factory():
     engine = create_async_engine(DATABASE_URL)
@@ -20,7 +20,7 @@ def get_uow(session_factory = Depends(get_session_factory)) -> UnitOfWorkPort:
 
 
 def get_catalog_client() -> CatalogClientPort:
-    return HttpCatalogClient(base_url="http://catalog-service", api_key="api-key")
+    return HttpCatalogClient(base_url=CATALOG_SERVICE_URL, api_key=CATALOG_SERVICE_API_KEY)
 
 
 def get_create_order_usecase(uow = Depends(get_uow), catalog_client = Depends(get_catalog_client)) -> CreateOrderUsecase:
