@@ -17,3 +17,7 @@ class OrderRepositoryPort(ABC):
     @abstractmethod
     async def get_by_idempotency_key(self, key: str) -> Optional[Order]:
         pass
+
+    @abstractmethod
+    async def update(self, order: Order) -> None:
+        pass

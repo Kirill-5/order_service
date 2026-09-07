@@ -16,3 +16,4 @@ class OrderModel(Base):
     idempotency_key = Column(String, nullable=False, unique=True)
     created_at = Column(DateTime(timezone=True), nullable=False)
     updated_at = Column(DateTime(timezone=True), nullable=False)
+    payment_id = Column(String, nullable=True)

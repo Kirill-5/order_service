@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from uuid import UUID
 
 from domain.order import OrderStatus
+from typing import Literal, Optional
 
 
 class CreateOrderRequest(BaseModel):
@@ -21,3 +22,11 @@ class OrderResponse(BaseModel):
     status: OrderStatus
     created_at: datetime
     updated_at: datetime
+
+
+class PaymentCallbackRequest(BaseModel):
+    payment_id: str
+    order_id: UUID
+    status: Literal["succeeded", "failed"]
+    amount: str
+    error_message: Optional[str] = None

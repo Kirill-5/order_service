@@ -10,6 +10,8 @@ from application.usecases.get_order import GetOrderUsecase
 from domain.order import OrderNotFoundError, InsufficientStockError
 from presentation.api.schemas import OrderResponse, CreateOrderRequest
 from presentation.api.dependencies import get_create_order_usecase, get_get_order_usecase
+from presentation.api.schemas import PaymentCallbackRequest
+from application.usecases.process_payment_callback import ProcessPaymentCallbackUsecase
 
 router = APIRouter()
 
@@ -56,3 +58,19 @@ async def get_order(
             content = {"message": str(e)},
             status_code = HTTPStatus.NOT_FOUND,
         )
+
+
+@router.post(
+    "/api/orders/payment-callback",
+    status_code=200,
+)
+async def payment_callback(
+        callback: PaymentCallbackRequest,
+        payment_callback_usecase: ProcessPaymentCallbackUsecase = Depends(get_process_payment_callback_usecase)
+):
+    await payment_callback_usecase.execute(
+        order_id=callback.order_id,
+        payment_id=callback.payment_id,
+        status=callback.status,
+    )
+

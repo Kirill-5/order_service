@@ -10,6 +10,7 @@ class SQLAlchemyOrderRepository(OrderRepositoryPort):
     def __init__(self, session: AsyncSession):
         self.session = session
 
+
     async def add(self, order: Order) -> None:
         model = OrderModel(
             id=order.id,
@@ -23,6 +24,7 @@ class SQLAlchemyOrderRepository(OrderRepositoryPort):
         )
         self.session.add(model)
 
+
     async def get_by_id(self, order_id) -> Order | None:
         stmt = select(OrderModel).where(OrderModel.id == order_id)
         result = await self.session.execute(stmt)
@@ -31,6 +33,7 @@ class SQLAlchemyOrderRepository(OrderRepositoryPort):
             return None
         return self._to_domain(model)
 
+
     async def get_by_idempotency_key(self, key: str) -> Order | None:
         stmt = select(OrderModel).where(OrderModel.idempotency_key == key)
         result = await self.session.execute(stmt)
@@ -38,6 +41,20 @@ class SQLAlchemyOrderRepository(OrderRepositoryPort):
         if model is None:
             return None
         return self._to_domain(model)
+
+
+    async def update(self, order: Order) -> None:
+        stmt = select(OrderModel).where(OrderModel.id == order.id)
+        result = await self.session.execute(stmt)
+        model = result.scalar_one_or_none()
+
+        if model is None:
+            return
+        model.status = order.status
+        model.payment_id = order.payment_id
+        model.updated_at = order.updated_at
+
+
 
     def _to_domain(self, model: OrderModel) -> Order:
         return Order(
