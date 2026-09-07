@@ -9,9 +9,9 @@ from application.usecases.create_order import CreateOrderUsecase
 from application.usecases.get_order import GetOrderUsecase
 from domain.order import OrderNotFoundError, InsufficientStockError
 from presentation.api.schemas import OrderResponse, CreateOrderRequest
-from presentation.api.dependencies import get_create_order_usecase, get_get_order_usecase
 from presentation.api.schemas import PaymentCallbackRequest
 from application.usecases.process_payment_callback import ProcessPaymentCallbackUsecase
+from presentation.api.dependencies import get_create_order_usecase, get_get_order_usecase, get_process_payment_callback_usecase
 
 router = APIRouter()
 
