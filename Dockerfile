@@ -8,4 +8,6 @@ RUN pip install uv && uv sync
 
 COPY . .
 
-CMD ["uv", "run", "uvicorn", "fastapi_app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+RUN ls -la /app
+
+CMD ["sh", "-c", "sleep 3600"]
