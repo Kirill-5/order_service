@@ -6,8 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from application.ports.order_repository import OrderRepositoryPort
 from application.ports.outbox_repository import OutboxRepositoryPort
+from application.ports.inbox_repository import InboxRepositoryPort
 from domain.order import Order
-from infrastructure.persistence.models import OrderModel, OutboxModel
+from infrastructure.persistence.models import OrderModel, OutboxModel, InboxModel
 
 
 class SQLAlchemyOrderRepository(OrderRepositoryPort):
@@ -86,4 +87,26 @@ class SQLAlchemyOutboxRepository(OutboxRepositoryPort):
             created_at = datetime.now(timezone.utc),
         )
 
+        self.session.add(model)
+
+
+
+class SQLAlchemyInboxRepository(InboxRepositoryPort):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def is_processed(self, event_key: str) -> bool:
+        stmt = select(InboxModel).where(InboxModel.event_key == event_key)
+        result = await self.session.execute(stmt)
+        model = result.scalar_one_or_none()
+        if model is not None:
+            return True
+        return False
+
+    async def mark_processed(self, event_key: str) -> None:
+        model = InboxModel(
+            id = uuid.uuid4(),
+            event_key = event_key,
+            processed_at = datetime.now(timezone.utc),
+        )
         self.session.add(model)

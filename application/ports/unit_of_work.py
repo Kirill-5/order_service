@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from application.ports.inbox_repository import InboxRepositoryPort
 from application.ports.order_repository import OrderRepositoryPort
 from application.ports.outbox_repository import OutboxRepositoryPort
 
@@ -24,4 +25,10 @@ class UnitOfWorkPort(ABC):
     @property
     @abstractmethod
     def outbox(self) -> OutboxRepositoryPort:
+        pass
+
+
+    @property
+    @abstractmethod
+    def inbox(self) -> InboxRepositoryPort:
         pass

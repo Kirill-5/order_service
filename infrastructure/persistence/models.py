@@ -29,3 +29,12 @@ class OutboxModel(Base):
     payload = Column(JSONB, nullable=False)
     is_sent = Column(Boolean, nullable=False, default=False)
     created_at = Column(DateTime(timezone=True), nullable=False)
+
+
+
+class InboxModel(Base):
+    __tablename__ = "inbox"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    event_key = Column(String, nullable=False, unique=True)
+    processed_at = Column(DateTime(timezone=True), nullable=False)

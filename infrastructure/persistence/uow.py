@@ -1,10 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from application.ports.inbox_repository import InboxRepositoryPort
 from application.ports.order_repository import OrderRepositoryPort
 from application.ports.outbox_repository import OutboxRepositoryPort
 from application.ports.unit_of_work import UnitOfWorkPort
-from infrastructure.persistence.repository import SQLAlchemyOrderRepository, SQLAlchemyOutboxRepository
-
+from infrastructure.persistence.repository import SQLAlchemyOrderRepository, SQLAlchemyOutboxRepository, \
+    SQLAlchemyInboxRepository
 
 
 class SQLAlchemyUnitOfWork(UnitOfWorkPort):
@@ -16,6 +17,7 @@ class SQLAlchemyUnitOfWork(UnitOfWorkPort):
         self.session = self.session_factory()
         self._order_repo = SQLAlchemyOrderRepository(self.session)
         self._outbox_repo = SQLAlchemyOutboxRepository(self.session)
+        self._inbox_repo = SQLAlchemyInboxRepository(self.session)
         return self
 
 
@@ -33,6 +35,10 @@ class SQLAlchemyUnitOfWork(UnitOfWorkPort):
     @property
     def outbox(self) -> OutboxRepositoryPort:
         return self._outbox_repo
+
+    @property
+    def inbox(self) -> InboxRepositoryPort:
+        return self._inbox_repo
 
 
     async def commit(self) -> None:
