@@ -1,9 +1,13 @@
+import uuid
+from datetime import timezone, datetime
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from application.ports.order_repository import OrderRepositoryPort
+from application.ports.outbox_repository import OutboxRepositoryPort
 from domain.order import Order
-from infrastructure.persistence.models import OrderModel
+from infrastructure.persistence.models import OrderModel, OutboxModel
 
 
 class SQLAlchemyOrderRepository(OrderRepositoryPort):
@@ -67,3 +71,19 @@ class SQLAlchemyOrderRepository(OrderRepositoryPort):
             created_at=model.created_at,
             updated_at=model.updated_at,
         )
+
+
+class SQLAlchemyOutboxRepository(OutboxRepositoryPort):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def add(self, topic : str, payload : dict) -> None:
+        model = OutboxModel(
+            id = uuid.uuid4(),
+            topic = topic,
+            payload = payload,
+            is_sent = False,
+            created_at = datetime.now(timezone.utc),
+        )
+
+        self.session.add(model)

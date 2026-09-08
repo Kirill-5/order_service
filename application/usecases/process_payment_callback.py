@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from uuid import UUID
+from uuid import uuid4
 
 from application.ports.unit_of_work import UnitOfWorkPort
 from domain.order import Order, OrderNotFoundError, OrderStatus
@@ -22,6 +23,14 @@ class ProcessPaymentCallbackUsecase:
 
             if status == "succeeded":
                 order.status = OrderStatus.PAID
+                payload = {
+                    "event_type": "order.paid",
+                    "order_id": str(order_id),
+                    "item_id": order.item_id,
+                    "quantity": order.quantity,
+                    "idempotency_key": str(uuid4()),
+                }
+                await uow.outbox.add(topic="student_system-order.events", payload=payload)
             elif status == "failed":
                 order.status = OrderStatus.CANCELLED
 

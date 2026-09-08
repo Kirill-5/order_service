@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from application.ports.order_repository import OrderRepositoryPort
+from application.ports.outbox_repository import OutboxRepositoryPort
 
 class UnitOfWorkPort(ABC):
     @abstractmethod
@@ -18,4 +19,9 @@ class UnitOfWorkPort(ABC):
 
     @abstractmethod
     async def commit(self) -> None:
+        pass
+
+    @property
+    @abstractmethod
+    def outbox(self) -> OutboxRepositoryPort:
         pass

@@ -16,3 +16,5 @@ ORDER_SERVICE_CALLBACK_URL = os.getenv(
     "ORDER_SERVICE_CALLBACK_URL",
     "http://student-kirill-5-order-service-web.student-kirill-5-order-service.svc:8000/api/orders/payment-callback",
 )
+
+KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
