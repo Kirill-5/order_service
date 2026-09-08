@@ -8,6 +8,6 @@ RUN pip install uv && uv sync
 
 COPY . .
 
-RUN ls -la /app
+ENV PYTHONPATH=/app
 
 CMD ["uv", "run", "python", "bin/run.py"]
