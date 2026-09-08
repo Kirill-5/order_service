@@ -10,4 +10,4 @@ COPY . .
 
 RUN ls -la /app
 
-CMD ["uv", "run", "uvicorn", "fastapi_app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "python", "bin/run.py"]
