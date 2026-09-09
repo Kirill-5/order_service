@@ -64,7 +64,7 @@ class ProcessPaymentCallbackUsecase:
                         reference_id=str(order.id),
                         idempotency_key=str(uuid4())
                     )
-            except httpx.HTTPStatusError:
-                print("Ошибка отправки уведомления пользователю")
+            except httpx.HTTPStatusError as e:
+                print(f"Ошибка отправки уведомления пользователю: {e}")
 
             return order
