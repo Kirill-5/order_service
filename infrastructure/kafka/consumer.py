@@ -3,6 +3,8 @@ from uuid import UUID
 
 from aiokafka import AIOKafkaConsumer
 
+from domain.order import OrderNotFoundError
+
 
 class ShipmentEventConsumer:
     def __init__(self, bootstrap_servers: str, usecase_factory):
@@ -23,8 +25,11 @@ class ShipmentEventConsumer:
         async for message in self.consumer:
             data = json.loads(message.value)
             usecase = self.usecase_factory()
-            await usecase.execute(
-                event_type=data["event_type"],
-                order_id=UUID(data["order_id"]),
-                reason=data.get("reason"),
-            )
+            try:
+                await usecase.execute(
+                    event_type=data["event_type"],
+                    order_id=UUID(data["order_id"]),
+                    reason=data.get("reason"),
+                )
+            except OrderNotFoundError:
+                print(f"Order not found for shipment event: {data.get('order_id')}")

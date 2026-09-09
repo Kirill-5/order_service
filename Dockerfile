@@ -10,4 +10,4 @@ COPY . .
 
 ENV PYTHONPATH=/app
 
-CMD ["sh", "-c", "uv run python bin/run.py 2>&1 || echo RUN_FAILED; sleep 3600"]
+CMD ["uv", "run", "python", "bin/run.py"]
