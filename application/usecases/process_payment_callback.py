@@ -56,13 +56,13 @@ class ProcessPaymentCallbackUsecase:
                     await self.notification_client.send_notification(
                         message="PAID: Ваш заказ успешно оплачен и готов к отправке",
                         reference_id=str(order.id),
-                        idempotency_key=str(uuid4())
+                        idempotency_key=f"{order.id}:PAID"
                     )
                 elif order.status == OrderStatus.CANCELLED:
                     await self.notification_client.send_notification(
                         message=f"CANCELLED: Ваш заказ отменен. Причина: {error_message}",
                         reference_id=str(order.id),
-                        idempotency_key=str(uuid4())
+                        idempotency_key=f"{order.id}:CANCELLED_PAYMENT"
                     )
             except httpx.HTTPStatusError as e:
                 print(f"Ошибка отправки уведомления пользователю: {e}")

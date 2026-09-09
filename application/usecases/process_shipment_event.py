@@ -37,13 +37,13 @@ class ProcessShipmentEventUsecase:
                     await self.notification_client.send_notification(
                         message="SHIPPED: Ваш заказ отправлен в доставку",
                         reference_id=str(order.id),
-                        idempotency_key=str(uuid4()),
+                        idempotency_key=f"{order.id}:SHIPPED"
                     )
                 elif order.status == OrderStatus.CANCELLED:
                     await self.notification_client.send_notification(
                         message=f"CANCELLED: Ваш заказ отменен. Причина: {reason}",
                         reference_id=str(order.id),
-                        idempotency_key=str(uuid4()),
+                        idempotency_key=f"{order.id}:CANCELLED_SHIPMENT"
                     )
             except httpx.HTTPStatusError as e:
                 print(f"Ошибка отправки уведомления пользователю: {e}")

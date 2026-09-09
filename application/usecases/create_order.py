@@ -66,7 +66,7 @@ class CreateOrderUsecase:
                 await self.notification_client.send_notification(
                     message= "NEW: Ваш заказ создан и ожидает оплаты",
                     reference_id=str(new_order.id),
-                    idempotency_key=str(uuid4())
+                    idempotency_key=f"{new_order.id}:NEW"
                 )
             except httpx.HTTPStatusError as e:
                 print(f"Ошибка отправки уведомления пользователю: {e}")
