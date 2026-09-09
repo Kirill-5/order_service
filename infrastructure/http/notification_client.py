@@ -1,3 +1,5 @@
+import asyncio
+
 import httpx
 
 from application.ports.notification_client import NotificationClientPort
@@ -13,13 +15,20 @@ class HttpNotificationClient(NotificationClientPort):
         url = f"{self.base_url}/api/notifications"
         headers = {"X-Api-Key": self.api_key}
 
-        response = await self.client.post(
-        url,
-        headers=headers,
-        json={
-            "message": message,
-            "reference_id": reference_id,
-            "idempotency_key": idempotency_key,
-        })
-
-        response.raise_for_status()
+        for attempt in range(3):
+            response = await self.client.post(
+                url,
+                headers=headers,
+                json={
+                    "message": message,
+                    "reference_id": reference_id,
+                    "idempotency_key": idempotency_key,
+                },
+            )
+            try:
+                response.raise_for_status()
+                return
+            except httpx.HTTPStatusError:
+                if attempt == 2:
+                    raise
+                await asyncio.sleep(1)
