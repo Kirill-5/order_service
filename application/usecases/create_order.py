@@ -1,22 +1,28 @@
-from datetime import datetime, timezone
-from uuid import UUID, uuid4
+from datetime import UTC, datetime
 from decimal import Decimal
+from uuid import uuid4
 
 import httpx
 
-
 from application.ports.catalog_client import CatalogClientPort
-from application.ports.unit_of_work import UnitOfWorkPort
+from application.ports.notification_client import NotificationClientPort
 from application.ports.payment_client import PaymentClientPort
+from application.ports.unit_of_work import UnitOfWorkPort
 from domain.order import InsufficientStockError, Order, OrderStatus
 from settings import ORDER_SERVICE_CALLBACK_URL
 
 
 class CreateOrderUsecase:
-    def __init__(self, uow: UnitOfWorkPort, catalog_client: CatalogClientPort, payment_client: PaymentClientPort):
+    def __init__(self,
+        uow: UnitOfWorkPort,
+        catalog_client: CatalogClientPort,
+        payment_client: PaymentClientPort,
+        notification_client: NotificationClientPort,
+        ):
         self.uow = uow
         self.catalog_client = catalog_client
         self.payment_client = payment_client
+        self.notification_client = notification_client
 
 
     async def execute(self, user_id: str, item_id: str, quantity: int, idempotency_key: str) -> Order:
@@ -37,8 +43,8 @@ class CreateOrderUsecase:
                 quantity = quantity,
                 status = OrderStatus.NEW,
                 idempotency_key = idempotency_key,
-                created_at = datetime.now(timezone.utc),
-                updated_at = datetime.now(timezone.utc),
+                created_at = datetime.now(UTC),
+                updated_at = datetime.now(UTC),
             )
 
             try:
@@ -53,8 +59,17 @@ class CreateOrderUsecase:
                 new_order.status = OrderStatus.CANCELLED
 
 
-
             await uow.orders.add(new_order)
             await uow.commit()
+
+            try:
+                await self.notification_client.send_notification(
+                    message= "Ваш заказ создан и ожидает оплаты",
+                    reference_id=str(new_order.id),
+                    idempotency_key=str(uuid4())
+                )
+            except httpx.HTTPStatusError:
+                print("Ошибка отправки уведомления пользователю")
+
 
             return new_order

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 from uuid import UUID
 
 from domain.order import Order
@@ -11,11 +10,11 @@ class OrderRepositoryPort(ABC):
         pass
 
     @abstractmethod
-    async def get_by_id(self, order_id: UUID) -> Optional[Order]:
+    async def get_by_id(self, order_id: UUID) -> Order | None:
         pass
 
     @abstractmethod
-    async def get_by_idempotency_key(self, key: str) -> Optional[Order]:
+    async def get_by_idempotency_key(self, key: str) -> Order | None:
         pass
 
     @abstractmethod

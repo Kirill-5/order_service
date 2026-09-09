@@ -26,4 +26,5 @@ class ShipmentEventConsumer:
             await usecase.execute(
                 event_type=data["event_type"],
                 order_id=UUID(data["order_id"]),
+                reason=data.get("reason"),
             )

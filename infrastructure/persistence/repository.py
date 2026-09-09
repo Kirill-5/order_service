@@ -1,14 +1,14 @@
 import uuid
-from datetime import timezone, datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from application.ports.inbox_repository import InboxRepositoryPort
 from application.ports.order_repository import OrderRepositoryPort
 from application.ports.outbox_repository import OutboxRepositoryPort
-from application.ports.inbox_repository import InboxRepositoryPort
 from domain.order import Order
-from infrastructure.persistence.models import OrderModel, OutboxModel, InboxModel
+from infrastructure.persistence.models import InboxModel, OrderModel, OutboxModel
 
 
 class SQLAlchemyOrderRepository(OrderRepositoryPort):
@@ -84,7 +84,7 @@ class SQLAlchemyOutboxRepository(OutboxRepositoryPort):
             topic = topic,
             payload = payload,
             is_sent = False,
-            created_at = datetime.now(timezone.utc),
+            created_at = datetime.now(UTC),
         )
 
         self.session.add(model)
@@ -99,14 +99,12 @@ class SQLAlchemyInboxRepository(InboxRepositoryPort):
         stmt = select(InboxModel).where(InboxModel.event_key == event_key)
         result = await self.session.execute(stmt)
         model = result.scalar_one_or_none()
-        if model is not None:
-            return True
-        return False
+        return model is not None
 
     async def mark_processed(self, event_key: str) -> None:
         model = InboxModel(
             id = uuid.uuid4(),
             event_key = event_key,
-            processed_at = datetime.now(timezone.utc),
+            processed_at = datetime.now(UTC),
         )
         self.session.add(model)

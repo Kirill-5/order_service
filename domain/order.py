@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from uuid import UUID
-from typing import Optional
+
 
 class OrderStatus(Enum):
     NEW = 'NEW'
@@ -20,7 +20,7 @@ class Order:
     idempotency_key: str
     created_at: datetime
     updated_at: datetime
-    payment_id: Optional[str] = None
+    payment_id: str | None = None
 
 
 class InsufficientStockError(Exception):

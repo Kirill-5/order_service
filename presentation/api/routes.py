@@ -1,17 +1,23 @@
 from http import HTTPStatus
+from uuid import UUID
 
 from fastapi import APIRouter, Depends
-
 from starlette.responses import JSONResponse
 
-from uuid import UUID
 from application.usecases.create_order import CreateOrderUsecase
 from application.usecases.get_order import GetOrderUsecase
-from domain.order import OrderNotFoundError, InsufficientStockError
-from presentation.api.schemas import OrderResponse, CreateOrderRequest
-from presentation.api.schemas import PaymentCallbackRequest
 from application.usecases.process_payment_callback import ProcessPaymentCallbackUsecase
-from presentation.api.dependencies import get_create_order_usecase, get_get_order_usecase, get_process_payment_callback_usecase
+from domain.order import InsufficientStockError, OrderNotFoundError
+from presentation.api.dependencies import (
+    get_create_order_usecase,
+    get_get_order_usecase,
+    get_process_payment_callback_usecase,
+)
+from presentation.api.schemas import (
+    CreateOrderRequest,
+    OrderResponse,
+    PaymentCallbackRequest,
+)
 
 router = APIRouter()
 
@@ -72,5 +78,6 @@ async def payment_callback(
         order_id=callback.order_id,
         payment_id=callback.payment_id,
         status=callback.status,
+        error_message=callback.error_message
     )
 

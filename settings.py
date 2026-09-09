@@ -16,5 +16,9 @@ ORDER_SERVICE_CALLBACK_URL = os.getenv(
     "ORDER_SERVICE_CALLBACK_URL",
     "http://student-kirill-5-order-service-web.student-kirill-5-order-service.svc:8000/api/orders/payment-callback",
 )
-
+NOTIFICATIONS_SERVICE_URL = os.getenv(
+    "NOTIFICATIONS_SERVICE_URL",
+    "http://student-system-capashino-web.student-system-capashino.svc:8000",
+)
+NOTIFICATIONS_SERVICE_API_KEY = os.getenv("NOTIFICATIONS_SERVICE_API_KEY")
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")

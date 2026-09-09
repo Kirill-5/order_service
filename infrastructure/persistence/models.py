@@ -1,5 +1,6 @@
-from sqlalchemy import Column, DateTime, Enum as SQLEnum, Integer, String, Boolean
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 from domain.order import OrderStatus
 from infrastructure.persistence.base import Base

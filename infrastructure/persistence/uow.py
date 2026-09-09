@@ -1,11 +1,13 @@
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from application.ports.inbox_repository import InboxRepositoryPort
 from application.ports.order_repository import OrderRepositoryPort
 from application.ports.outbox_repository import OutboxRepositoryPort
 from application.ports.unit_of_work import UnitOfWorkPort
-from infrastructure.persistence.repository import SQLAlchemyOrderRepository, SQLAlchemyOutboxRepository, \
-    SQLAlchemyInboxRepository
+from infrastructure.persistence.repository import (
+    SQLAlchemyInboxRepository,
+    SQLAlchemyOrderRepository,
+    SQLAlchemyOutboxRepository,
+)
 
 
 class SQLAlchemyUnitOfWork(UnitOfWorkPort):

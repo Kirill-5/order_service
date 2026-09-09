@@ -6,9 +6,10 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-
 from infrastructure.persistence.base import Base
-from infrastructure.persistence.models import OrderModel  # noqa: F401 - импорт нужен, чтобы модель зарегистрировалась в metadata
+from infrastructure.persistence.models import (
+    OrderModel,  # noqa: F401 - импорт нужен, чтобы модель зарегистрировалась в metadata
+)
 from settings import DATABASE_URL
 
 # this is the Alembic Config object, which provides

@@ -1,7 +1,6 @@
 import httpx
 
-
-from application.ports.payment_client import  PaymentDto, PaymentClientPort
+from application.ports.payment_client import PaymentClientPort, PaymentDto
 
 
 class HttpPaymentClient(PaymentClientPort):

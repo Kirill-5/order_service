@@ -1,9 +1,7 @@
 from uuid import UUID
 
-
 from application.ports.unit_of_work import UnitOfWorkPort
-from domain.order import OrderNotFoundError, Order
-
+from domain.order import Order, OrderNotFoundError
 
 
 class GetOrderUsecase:
