@@ -54,13 +54,13 @@ class ProcessPaymentCallbackUsecase:
             try:
                 if order.status == OrderStatus.PAID:
                     await self.notification_client.send_notification(
-                        message="Ваш заказ успешно оплачен и готов к отправке",
+                        message="PAID: Ваш заказ успешно оплачен и готов к отправке",
                         reference_id=str(order.id),
                         idempotency_key=str(uuid4())
                     )
                 elif order.status == OrderStatus.CANCELLED:
                     await self.notification_client.send_notification(
-                        message=f"Ваш заказ отменен. Причина: {error_message}",
+                        message=f"CANCELLED: Ваш заказ отменен. Причина: {error_message}",
                         reference_id=str(order.id),
                         idempotency_key=str(uuid4())
                     )

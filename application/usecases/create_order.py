@@ -64,7 +64,7 @@ class CreateOrderUsecase:
 
             try:
                 await self.notification_client.send_notification(
-                    message= "Ваш заказ создан и ожидает оплаты",
+                    message= "NEW: Ваш заказ создан и ожидает оплаты",
                     reference_id=str(new_order.id),
                     idempotency_key=str(uuid4())
                 )
